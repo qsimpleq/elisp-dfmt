@@ -1,4 +1,4 @@
-;;; dfmt.el - Emacs Interface to D formatting tool dfmt.
+;;; dfmt.el - Emacs Interface to D indenting/formatting tool dfmt.
 
 (defgroup dfmt nil
   "Interface to D dfmt."
@@ -10,7 +10,7 @@
 (defun dfmt-region (buffer)
   "Format D BUFFER's region from START to END using the
 external program GNU format."
-  (interactive "bBuffer (to format): ")
+  (interactive "bFormat region of buffer: ")
   (when (executable-find dfmt-command)
     (save-buffer)
     (shell-command-on-region (region-beginning) (region-end)
@@ -19,20 +19,22 @@ external program GNU format."
 
 (defun dfmt-buffer (buffer)
   "Format D Buffer using the external program GNU format."
-  (interactive "bBuffer (to format): ")
+  (interactive "bFormat buffer: ")
   (mark-whole-buffer)
   (dfmt-region buffer))
 
 (defun dfmt-file (file out-file)
   "Format D Source or Header FILE using the external program dfmt and put result in OUT-FILE."
-  (interactive "fSource file (to format): \nFOutput file (from format): ")
+  (interactive "fFormat source file: \nFOutput file (from format): ")
   (when (executable-find dfmt-command)
     (progn (shell-command (concat dfmt-command " " dfmt-flags " " file " -o " out-file))
            (find-file out-file))))
 
-(global-set-key [(control c) (F) (r)] 'dfmt-region)
-(global-set-key [(control c) (F) (b)] 'dfmt-buffer)
-(global-set-key [(control c) (F) (f)] 'dfmt-file)
+(defun dfmt-setup-keys ()
+  (local-set-key [(control c) (F) (r)] 'dfmt-region)
+  (local-set-key [(control c) (F) (b)] 'dfmt-buffer)
+  (local-set-key [(control c) (F) (f)] 'dfmt-file))
+(add-hook 'd-mode-hook 'dfmt-setup-keys)
 
 (define-key menu-bar-tools-menu [dfmt-buffer]
   '(menu-item "Tidy D Buffer (dfmt)..." dfmt-buffer
