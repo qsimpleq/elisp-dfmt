@@ -7,6 +7,9 @@
 (defcustom dfmt-command "dfmt" "D format command"
   :group 'dfmt)
 
+(defcustom dfmt-flags "" "Flags sent to dfmt."
+  :group 'dfmt)
+
 (defun dfmt-region (buffer)
   "Format D BUFFER's region from START to END using the
 external program GNU format."
@@ -16,19 +19,25 @@ external program GNU format."
     (shell-command-on-region (region-beginning) (region-end)
                              dfmt-command
                              buffer t)))
+(defalias 'd-indent-region 'dfmt-region)
 
 (defun dfmt-buffer (buffer)
   "Format D Buffer using the external program GNU format."
   (interactive "bFormat buffer: ")
   (mark-whole-buffer)
   (dfmt-region buffer))
+(defalias 'd-indent-buffer 'dfmt-buffer)
 
 (defun dfmt-file (file out-file)
   "Format D Source or Header FILE using the external program dfmt and put result in OUT-FILE."
   (interactive "fFormat source file: \nFOutput file (from format): ")
   (when (executable-find dfmt-command)
-    (progn (shell-command (concat dfmt-command " " dfmt-flags " " file " -o " out-file))
+    (progn (shell-command (concat dfmt-command
+                                  " " dfmt-flags
+                                  " " file
+                                  " -o " out-file))
            (find-file out-file))))
+(defalias 'd-indent-file 'dfmt-file)
 
 (defun dfmt-setup-keys ()
   (local-set-key [(control c) (F) (r)] 'dfmt-region)
