@@ -11,8 +11,8 @@
   :group 'dfmt)
 
 (defun dfmt-region (buffer)
-  "Format D BUFFER's region from START to END using the
-external program GNU format."
+  "Format D BUFFER's region from START to END using the external
+D formatting program dfmt."
   (interactive "bFormat region of buffer: ")
   (when (executable-find dfmt-command)
     (save-buffer)
@@ -22,7 +22,7 @@ external program GNU format."
 (defalias 'd-indent-region 'dfmt-region)
 
 (defun dfmt-buffer (buffer)
-  "Format D Buffer using the external program GNU format."
+  "Format D Buffer using the external D formatting program dfmt."
   (interactive "bFormat buffer: ")
   (mark-whole-buffer)
   (dfmt-region buffer))
