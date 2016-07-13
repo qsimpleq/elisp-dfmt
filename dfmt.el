@@ -38,6 +38,8 @@
 
 (defvar dfmt-stderr-verbose t "Verbose error message")
 
+(defvar dfmt-stderr-begin-message "Cannot format buffer, please check your code")
+
 ;;;###autoload
 (defun dfmt-region (beg end)
   "Format D BUFFER's region from START to END using the external
@@ -48,8 +50,10 @@ D formatting program dfmt."
             (errfile (expand-file-name dfmt-stderr-buffer-name temporary-file-directory))
             (outbuffer (get-buffer-create dfmt-buffer-name))
             (errbuffer (get-buffer-create dfmt-stderr-buffer-name))
+            (errmsg)
             (d-mode-buffer (current-buffer))
-            (old-point (point)))
+            (old-point (point))
+            )
 
         (set-buffer outbuffer)
         (erase-buffer)
@@ -69,17 +73,23 @@ D formatting program dfmt."
                0)
             (progn
               (if dfmt-stderr-verbose
-                  (message "%s" (with-temp-buffer
-                                  (insert-file-contents errfile)
-                                  (buffer-string)))
-                (message "Cannot format buffer, please check your code"))
-              (delete-file errfile))
+                  (setq errmsg (concat dfmt-stderr-begin-message ":\n"
+                                       (with-temp-buffer
+                                         (insert-file-contents errfile)
+                                         (buffer-string))))
+                (setq errmsg dfmt-stderr-begin-message))
+              (set-buffer errbuffer)
+              (insert errmsg)
+              (delete-file errfile)
+              (message "%s" errmsg)
+              nil)
           (progn
             (delete-region beg end)
             (goto-char beg)
             (insert-buffer-substring outbuffer)
             (goto-char old-point)
-            (font-lock-fontify-buffer))))
+            (font-lock-fontify-buffer)
+            t)))
     (error "Seem dfmt is not installed")))
 (defalias 'd-indent-region 'dfmt-region)
 
@@ -120,6 +130,19 @@ D formatting program dfmt."
                           dfmt-flags))
            (find-file out-file))))
 (defalias 'd-indent-file 'dfmt-file)
+
+;;;###autoload
+(defun dfmt-save-buffer ()
+  "Format D Buffer using the external D formatting program dfmt and
+save current buffer in visited file if modified.
+You are will can't to save a brokened dlang code."
+  (interactive)
+  (when (buffer-modified-p)
+    (if (dfmt-buffer)
+        (save-buffer)
+      (error (with-temp-buffer
+               (insert-buffer-substring (get-buffer dfmt-stderr-buffer-name))
+               (buffer-string))))))
 
 ;;;###autoload
 (defun dfmt-setup-keys ()
