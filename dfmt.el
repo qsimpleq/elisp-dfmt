@@ -43,6 +43,7 @@
      ,@body
      (goto-char old-point)))
 
+;;;###autoload
 (defun dfmt-region (beg end)
   "Format D BUFFER's region from START to END using the external
 D formatting program dfmt."
@@ -85,12 +86,14 @@ D formatting program dfmt."
     (error "Seem dfmt is not installed")))
 (defalias 'd-indent-region 'dfmt-region)
 
+;;;###autoload
 (defun dfmt-buffer ()
   "Format D Buffer using the external D formatting program dfmt."
   (interactive)
   (dfmt-region (point-min) (point-max)))
 (defalias 'd-indent-buffer 'dfmt-buffer)
 
+;;;###autoload
 (defun dfmt-region-or-buffer (arg)
   "Indent a region if selected, otherwise the whole buffer."
   (interactive "P")
@@ -106,6 +109,7 @@ D formatting program dfmt."
   )
 (defalias 'd-indent-region-or-buffer 'dfmt-region-or-buffer)
 
+;;;###autoload
 (defun dfmt-file (file out-file)
   "Format D Source or Header FILE using the external program dfmt and put result in OUT-FILE."
   (interactive "fFormat source file: \nFOutput file (from format): ")
@@ -120,6 +124,7 @@ D formatting program dfmt."
            (find-file out-file))))
 (defalias 'd-indent-file 'dfmt-file)
 
+;;;###autoload
 (defun dfmt-setup-keys ()
   (local-set-key [(control c) (F) (r)] 'dfmt-region)
   (local-set-key [(control c) (F) (b)] 'dfmt-buffer)
