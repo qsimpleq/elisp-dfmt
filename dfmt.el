@@ -1,4 +1,4 @@
-;;; dfmt.el - Emacs Interface to D indenting/formatting tool dfmt.
+;;; dfmt.el --- Emacs Interface to D indenting/formatting tool dfmt.
 
 ;; Author: Per Nordlöw
 ;; Contributors: Kirill Babikhin
