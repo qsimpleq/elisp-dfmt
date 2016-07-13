@@ -69,7 +69,7 @@ D formatting program dfmt."
                              )
                        dfmt-flags))
 
-        (if (> (file-attribute-size (file-attributes errfile))
+        (if (> (nth 7 (file-attributes errfile))
                0)
             (progn
               (message "%s" (with-temp-buffer
