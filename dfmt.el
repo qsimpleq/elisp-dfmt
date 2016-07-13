@@ -37,12 +37,6 @@
 (defvar dfmt-stderr-buffer-name "*dfmt-stderr*"
   "*Name of the temporary dfmt buffer.")
 
-(defmacro perltidy-save-point (&rest body)
-  (declare (indent 0) (debug t))
-  `(let ((old-point (point)))
-     ,@body
-     (goto-char old-point)))
-
 ;;;###autoload
 (defun dfmt-region (beg end)
   "Format D BUFFER's region from START to END using the external
