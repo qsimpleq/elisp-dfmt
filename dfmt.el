@@ -20,35 +20,102 @@
 (defcustom dfmt-command "dfmt" "D format command"
   :group 'dfmt)
 
-(defcustom dfmt-flags "" "Flags sent to dfmt."
+;; (setq dfmt-flags '())
+(defcustom dfmt-flags
+  '()
+  "Flags sent to dfmt."
+  :type 'list
   :group 'dfmt)
 
-(defun dfmt-region (buffer)
+(defcustom dfmt-command "dfmt" "D format command"
+  :group 'dfmt)
+
+(defvar dfmt-buffer-name "*dfmt*"
+  "*Name of the temporary dfmt buffer.")
+
+(defvar dfmt-stderr-buffer-name "*dfmt-stderr*"
+  "*Name of the temporary dfmt buffer.")
+
+(defmacro perltidy-save-point (&rest body)
+  (declare (indent 0) (debug t))
+  `(let ((old-point (point)))
+     ,@body
+     (goto-char old-point)))
+
+(defun dfmt-region (beg end)
   "Format D BUFFER's region from START to END using the external
 D formatting program dfmt."
-  (interactive "bFormat region of buffer: ")
-  (when (executable-find dfmt-command)
-    (save-buffer)
-    (shell-command-on-region (region-beginning) (region-end)
-                             dfmt-command
-                             buffer t)))
+  (interactive "r")
+  (if (executable-find dfmt-command)
+      (let ((outfile (expand-file-name dfmt-buffer-name temporary-file-directory))
+            (errfile (expand-file-name dfmt-stderr-buffer-name temporary-file-directory))
+            (outbuffer (get-buffer-create dfmt-buffer-name))
+            (errbuffer (get-buffer-create dfmt-stderr-buffer-name))
+            (d-mode-buffer (current-buffer))
+            (old-point (point)))
+
+        (set-buffer outbuffer)
+        (erase-buffer)
+        (set-buffer errbuffer)
+        (erase-buffer)
+        (set-buffer d-mode-buffer)
+
+        (apply #'call-process-region
+               (append (list beg end dfmt-command
+                             nil
+                             (list dfmt-buffer-name errfile)
+                             nil
+                             )
+                       dfmt-flags))
+
+        (if (> (file-attribute-size (file-attributes errfile))
+               0)
+            (progn
+              (message "%s" (with-temp-buffer
+                              (insert-file-contents errfile)
+                              (buffer-string)))
+              (delete-file errfile))
+          (progn
+            (delete-region beg end)
+            (goto-char beg)
+            (insert-buffer-substring outbuffer)
+            (goto-char old-point)
+            (font-lock-fontify-buffer))))
+    (error "Seem dfmt is not installed")))
 (defalias 'd-indent-region 'dfmt-region)
 
-(defun dfmt-buffer (buffer)
+(defun dfmt-buffer ()
   "Format D Buffer using the external D formatting program dfmt."
-  (interactive "bFormat buffer: ")
-  (mark-whole-buffer)
-  (dfmt-region buffer))
+  (interactive)
+  (dfmt-region (point-min) (point-max)))
 (defalias 'd-indent-buffer 'dfmt-buffer)
+
+(defun dfmt-region-or-buffer (arg)
+  "Indent a region if selected, otherwise the whole buffer."
+  (interactive "P")
+  (let ((buf (current-buffer))
+        beg end)
+    (if (region-active-p)
+        (progn
+          (setq beg (region-beginning)
+                end (region-end))
+          (dfmt-region beg end))
+      (dfmt-buffer))
+    )
+  )
+(defalias 'd-indent-region-or-buffer 'dfmt-region-or-buffer)
 
 (defun dfmt-file (file out-file)
   "Format D Source or Header FILE using the external program dfmt and put result in OUT-FILE."
   (interactive "fFormat source file: \nFOutput file (from format): ")
   (when (executable-find dfmt-command)
-    (progn (shell-command (concat dfmt-command
-                                  " " dfmt-flags
-                                  " " file
-                                  " -o " out-file))
+    (progn (apply #'call-process
+                  (append (list dfmt-command
+                                file
+                                `(:file ,out-file)
+                                t
+                                )
+                          dfmt-flags))
            (find-file out-file))))
 (defalias 'd-indent-file 'dfmt-file)
 
@@ -56,7 +123,6 @@ D formatting program dfmt."
   (local-set-key [(control c) (F) (r)] 'dfmt-region)
   (local-set-key [(control c) (F) (b)] 'dfmt-buffer)
   (local-set-key [(control c) (F) (f)] 'dfmt-file))
-(add-hook 'd-mode-hook 'dfmt-setup-keys)
 
 (define-key menu-bar-tools-menu [dfmt-buffer]
   '(menu-item "Tidy D Buffer (dfmt)..." dfmt-buffer
