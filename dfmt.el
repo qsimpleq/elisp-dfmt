@@ -36,6 +36,8 @@
 (defvar dfmt-stderr-buffer-name "*dfmt-stderr*"
   "*Name of the temporary dfmt buffer.")
 
+(defvar dfmt-stderr-verbose t "Verbose error message")
+
 ;;;###autoload
 (defun dfmt-region (beg end)
   "Format D BUFFER's region from START to END using the external
@@ -66,9 +68,11 @@ D formatting program dfmt."
         (if (> (nth 7 (file-attributes errfile))
                0)
             (progn
-              (message "%s" (with-temp-buffer
-                              (insert-file-contents errfile)
-                              (buffer-string)))
+              (if dfmt-stderr-verbose
+                  (message "%s" (with-temp-buffer
+                                  (insert-file-contents errfile)
+                                  (buffer-string)))
+                (message "Cannot format buffer, please check your code"))
               (delete-file errfile))
           (progn
             (delete-region beg end)
