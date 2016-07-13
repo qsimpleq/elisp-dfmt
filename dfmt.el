@@ -1,5 +1,18 @@
 ;;; dfmt.el - Emacs Interface to D indenting/formatting tool dfmt.
 
+;; Author: Per Nordlöw
+;; Maintainer: Kirill Babikhin <qsimpleq>
+;; Keywords: tools, convenience, languages, Dlang
+;; URL: https://github.com/qsimpleq/elisp-dfmt
+;; Version: 0.1.0
+
+;;; Commentary:
+;; Original version: https://github.com/nordlow/elisp/blob/master/mine/dfmt.el
+;; Enable hotkeys
+;; (add-hook 'd-mode-hook 'dfmt-setup-keys)
+
+;;; Code:
+
 (defgroup dfmt nil
   "Interface to D dfmt."
   :group 'tools)
@@ -53,3 +66,4 @@ D formatting program dfmt."
               :help "Format a D source file using dfmt"))
 
 (provide 'dfmt)
+;;; dfmt.el ends here
