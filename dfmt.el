@@ -21,7 +21,6 @@
 (defcustom dfmt-command "dfmt" "D format command"
   :group 'dfmt)
 
-;; (setq dfmt-flags '())
 (defcustom dfmt-flags
   '()
   "Flags sent to dfmt."
