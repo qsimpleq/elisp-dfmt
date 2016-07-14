@@ -101,7 +101,7 @@ D formatting program dfmt."
 (defalias 'd-indent-buffer 'dfmt-buffer)
 
 ;;;###autoload
-(defun dfmt-region-or-buffer (arg)
+(defun dfmt-region-or-buffer ()
   "Indent a region if selected, otherwise the whole buffer."
   (interactive "P")
   (let ((buf (current-buffer))
