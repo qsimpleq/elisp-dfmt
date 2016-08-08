@@ -1,4 +1,4 @@
-;;; dfmt.el --- Emacs Interface to D indenting/formatting tool dfmt.
+;;; dfmt.el --- Interface to D indenting/formatting tool dfmt.
 
 ;; Author: Per Nordlöw
 ;; Contributors: Kirill Babikhin
@@ -33,7 +33,8 @@
   "Interface to D dfmt."
   :group 'tools)
 
-(defcustom dfmt-command "dfmt" "D format command"
+(defcustom dfmt-command "dfmt"
+  "D format command"
   :group 'dfmt)
 
 (defcustom dfmt-flags
@@ -42,16 +43,18 @@
   :type 'list
   :group 'dfmt)
 
-(defcustom dfmt-command "dfmt" "D format command"
+(defcustom dfmt-command "dfmt"
+  "D format command"
   :group 'dfmt)
 
 (defvar dfmt-buffer-name "*dfmt*"
-  "*Name of the temporary dfmt buffer.")
+  "Name of the temporary dfmt buffer.")
 
 (defvar dfmt-stderr-buffer-name "*dfmt-stderr*"
-  "*Name of the temporary dfmt buffer.")
+  "Name of the temporary dfmt buffer.")
 
-(defvar dfmt-stderr-verbose t "Verbose error message")
+(defvar dfmt-stderr-verbose t
+  "Verbose error message")
 
 (defvar dfmt-stderr-begin-message "Cannot format buffer, please check your code")
 
