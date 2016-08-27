@@ -43,10 +43,6 @@
   :type 'list
   :group 'dfmt)
 
-(defcustom dfmt-command "dfmt"
-  "D format command"
-  :group 'dfmt)
-
 (defvar dfmt-buffer-name "*dfmt*"
   "Name of the temporary dfmt buffer.")
 
