@@ -1,4 +1,4 @@
-;;; dfmt.el --- Interface to D indenting/formatting tool dfmt.
+;;; dfmt.el --- Emacs Interface to D indenting/formatting tool dfmt.
 
 ;; Author: Per Nordlöw
 ;; Contributors: Kirill Babikhin
@@ -6,21 +6,6 @@
 ;; Keywords: tools, convenience, languages, Dlang
 ;; URL: https://github.com/qsimpleq/elisp-dfmt
 ;; Version: 0.1.0
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2 of the License, or
-;; (at your option) any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
 
 ;;; Commentary:
 ;; Original version: https://github.com/nordlow/elisp/blob/master/mine/dfmt.el
@@ -33,8 +18,7 @@
   "Interface to D dfmt."
   :group 'tools)
 
-(defcustom dfmt-command "dfmt"
-  "D format command"
+(defcustom dfmt-command "dfmt" "D format command"
   :group 'dfmt)
 
 (defcustom dfmt-flags
@@ -43,14 +27,16 @@
   :type 'list
   :group 'dfmt)
 
+(defcustom dfmt-command "dfmt" "D format command"
+  :group 'dfmt)
+
 (defvar dfmt-buffer-name "*dfmt*"
-  "Name of the temporary dfmt buffer.")
+  "*Name of the temporary dfmt buffer.")
 
 (defvar dfmt-stderr-buffer-name "*dfmt-stderr*"
-  "Name of the temporary dfmt buffer.")
+  "*Name of the temporary dfmt buffer.")
 
-(defvar dfmt-stderr-verbose t
-  "Verbose error message")
+(defvar dfmt-stderr-verbose t "Verbose error message")
 
 (defvar dfmt-stderr-begin-message "Cannot format buffer, please check your code")
 
@@ -117,7 +103,7 @@ D formatting program dfmt."
 ;;;###autoload
 (defun dfmt-region-or-buffer ()
   "Indent a region if selected, otherwise the whole buffer."
-  (interactive "P")
+  (interactive)
   (let ((buf (current-buffer))
         beg end)
     (if (region-active-p)
