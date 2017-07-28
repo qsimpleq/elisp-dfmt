@@ -6,6 +6,7 @@
 ;; Keywords: tools, convenience, languages, Dlang
 ;; URL: https://github.com/qsimpleq/elisp-dfmt
 ;; Version: 0.1.0
+;; License: GPL v2, or any later version
 
 ;;; Commentary:
 ;; Original version: https://github.com/nordlow/elisp/blob/master/mine/dfmt.el
